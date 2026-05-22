@@ -1,41 +1,31 @@
 export function calculateL5Stats(matches: any[], teamId: number, isHome: boolean) {
-  // Szűrjük ki a csapat hazai vagy vendég meccseit
   const teamMatches = matches
     .filter(match => {
       if (isHome) return match.homeID === teamId && match.status === 'complete'
       return match.awayID === teamId && match.status === 'complete'
     })
-    .sort((a, b) => b.date_unix - a.date_unix) // Legújabb először
-    .slice(0, 5) // Utolsó 5
+    .sort((a, b) => b.date_unix - a.date_unix)
+    .slice(0, 5)
 
   if (teamMatches.length === 0) return null
 
   const count = teamMatches.length
+  const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length
 
-  // Gólok
   const goals = teamMatches.map(m => isHome ? m.homeGoalCount : m.awayGoalCount)
   const goalsAgainst = teamMatches.map(m => isHome ? m.awayGoalCount : m.homeGoalCount)
-
-  // xG
   const xg = teamMatches.map(m => isHome ? (m.team_a_xg || 0) : (m.team_b_xg || 0))
   const xgAgainst = teamMatches.map(m => isHome ? (m.team_b_xg || 0) : (m.team_a_xg || 0))
-
-  // Cornerek
   const corners = teamMatches.map(m => isHome ? (m.team_a_corners || 0) : (m.team_b_corners || 0))
   const cornersAgainst = teamMatches.map(m => isHome ? (m.team_b_corners || 0) : (m.team_a_corners || 0))
-
-  // Shots
   const shots = teamMatches.map(m => isHome ? (m.team_a_shots || 0) : (m.team_b_shots || 0))
   const shotsAgainst = teamMatches.map(m => isHome ? (m.team_b_shots || 0) : (m.team_a_shots || 0))
-
-  // Dangerous attacks
   const dangAttacks = teamMatches.map(m => isHome ? (m.team_a_dangerous_attacks || 0) : (m.team_b_dangerous_attacks || 0))
   const dangAttacksAgainst = teamMatches.map(m => isHome ? (m.team_b_dangerous_attacks || 0) : (m.team_a_dangerous_attacks || 0))
-
-  // Possession
   const possession = teamMatches.map(m => isHome ? (m.team_a_possession || 0) : (m.team_b_possession || 0))
-
-  const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length
+  const crosses = teamMatches.map(m => isHome ? (m.team_a_crosses || 0) : (m.team_b_crosses || 0))
+  const crossesAgainst = teamMatches.map(m => isHome ? (m.team_b_crosses || 0) : (m.team_a_crosses || 0))
+  const att3rd = teamMatches.map(m => isHome ? (m.team_a_att_3rd || 0) : (m.team_b_att_3rd || 0))
 
   return {
     matchesCount: count,
@@ -50,5 +40,8 @@ export function calculateL5Stats(matches: any[], teamId: number, isHome: boolean
     avgDangAttacks: avg(dangAttacks),
     avgDangAttacksAgainst: avg(dangAttacksAgainst),
     avgPossession: avg(possession),
+    avgCrosses: avg(crosses),
+    avgCrossesAgainst: avg(crossesAgainst),
+    avgAtt3rd: avg(att3rd),
   }
 }

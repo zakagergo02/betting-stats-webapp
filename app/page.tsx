@@ -2,12 +2,12 @@
 import { useState } from 'react'
 
 const LEAGUES = [
-  { name: 'Premier League', season_id: 12325 },
-  { name: 'La Liga', season_id: 12316 },
-  { name: 'Bundesliga', season_id: 12529 },
-  { name: 'Serie A', season_id: 12530 },
-  { name: 'Ligue 1', season_id: 12337 },
-  { name: 'Champions League', season_id: 12321 },
+  { name: 'Premier League', season_id: 15050 },
+  { name: 'La Liga', season_id: 14956 },
+  { name: 'Bundesliga', season_id: 14968 },
+  { name: 'Serie A', season_id: 15068 },
+  { name: 'Ligue 1', season_id: 14932 },
+  { name: 'Champions League', season_id: 14924 },
 ]
 
 export default function Home() {
