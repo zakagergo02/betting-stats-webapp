@@ -122,11 +122,33 @@ export function calculateCornerProbabilities(home: any, away: any) {
     })
   }
 
+ const homeOverUnder = []
+  for (let threshold = 2.5; threshold <= 9.5; threshold += 1) {
+    const floor = Math.floor(threshold)
+    homeOverUnder.push({
+      label: threshold.toFixed(1),
+      over: parseFloat((1 - poissonCDF(floor, hazaiXC)).toFixed(4)),
+      under: parseFloat(poissonCDF(floor, hazaiXC).toFixed(4))
+    })
+  }
+
+  const awayOverUnder = []
+  for (let threshold = 2.5; threshold <= 9.5; threshold += 1) {
+    const floor = Math.floor(threshold)
+    awayOverUnder.push({
+      label: threshold.toFixed(1),
+      over: parseFloat((1 - poissonCDF(floor, vendegXC)).toFixed(4)),
+      under: parseFloat(poissonCDF(floor, vendegXC).toFixed(4))
+    })
+  }
+
   return {
     hazaiXC: hazaiXC.toFixed(2),
     vendegXC: vendegXC.toFixed(2),
     osszXC: osszXC.toFixed(2),
-    overUnder
+    overUnder,
+    homeOverUnder,
+    awayOverUnder
   }
 }
 
@@ -166,10 +188,32 @@ export function calculateShotProbabilities(home: any, away: any) {
     })
   }
 
+  const homeOverUnder = []
+  for (let threshold = 6.5; threshold <= 19.5; threshold += 1) {
+    const floor = Math.floor(threshold)
+    homeOverUnder.push({
+      label: threshold.toFixed(1),
+      over: parseFloat((1 - poissonCDF(floor, hazaiXShot)).toFixed(4)),
+      under: parseFloat(poissonCDF(floor, hazaiXShot).toFixed(4))
+    })
+  }
+
+  const awayOverUnder = []
+  for (let threshold = 6.5; threshold <= 19.5; threshold += 1) {
+    const floor = Math.floor(threshold)
+    awayOverUnder.push({
+      label: threshold.toFixed(1),
+      over: parseFloat((1 - poissonCDF(floor, vendegXShot)).toFixed(4)),
+      under: parseFloat(poissonCDF(floor, vendegXShot).toFixed(4))
+    })
+  }
+
   return {
     hazaiXShot: hazaiXShot.toFixed(2),
     vendegXShot: vendegXShot.toFixed(2),
     osszXShot: osszXShot.toFixed(2),
-    overUnder
+    overUnder,
+    homeOverUnder,
+    awayOverUnder
   }
 }
