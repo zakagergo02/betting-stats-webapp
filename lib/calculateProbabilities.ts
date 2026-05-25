@@ -33,10 +33,15 @@ export function calculateGoalProbabilities(home: any, away: any) {
   const aVarhG = ((a.avgXg * 0.3 + aXgAll * 0.7) * 0.7) + ((a.avgGoals * 0.3 + aAvgGAll * 0.7) * 0.3)
   const aVarhGa = ((a.avgXgAgainst * 0.3 + aXgaAll * 0.7) * 0.7) + ((a.avgGoalsAgainst * 0.3 + aAvgGaAll * 0.7) * 0.3)
 
-  const hHybridTamadas = hVarhG + (h.avgCorners * 0.02)
-  const hHybridVedekezes = hVarhGa + (h.avgCornersAgainst * 0.02)
-  const aHybridTamadas = aVarhG + (a.avgCorners * 0.02)
-  const aHybridVedekezes = aVarhGa + (a.avgCornersAgainst * 0.02)
+  const hCorn = hs.cornersAVG_home || 5
+const hCornAg = hs.cornersAgainstAVG_home || 3
+const aCorn = as_.cornersAVG_away || 5
+const aCornAg = as_.cornersAgainstAVG_away || 3
+
+const hHybridTamadas = hVarhG + (hCorn * 0.02)
+const hHybridVedekezes = hVarhGa + (hCornAg * 0.02)
+const aHybridTamadas = aVarhG + (aCorn * 0.02)
+const aHybridVedekezes = aVarhGa + (aCornAg * 0.02)
 
   const hazaiGol = (hHybridTamadas + aHybridVedekezes) / 2
   const vendegGol = (aHybridTamadas + hHybridVedekezes) / 2

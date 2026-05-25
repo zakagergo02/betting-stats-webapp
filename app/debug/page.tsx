@@ -68,12 +68,6 @@ export default function Debug() {
                 <Row label="Átlag kapott gól" home={data.home.l5Stats?.avgGoalsAgainst} away={data.away.l5Stats?.avgGoalsAgainst} />
                 <Row label="Átlag xG" home={data.home.l5Stats?.avgXg} away={data.away.l5Stats?.avgXg} />
                 <Row label="Átlag xGA" home={data.home.l5Stats?.avgXgAgainst} away={data.away.l5Stats?.avgXgAgainst} />
-                <Row label="Átlag sarokrúgás" home={data.home.l5Stats?.avgCorners} away={data.away.l5Stats?.avgCorners} />
-                <Row label="Átlag kapott sarok" home={data.home.l5Stats?.avgCornersAgainst} away={data.away.l5Stats?.avgCornersAgainst} />
-                <Row label="Átlag lövés" home={data.home.l5Stats?.avgShots} away={data.away.l5Stats?.avgShots} />
-                <Row label="Átlag kapott lövés" home={data.home.l5Stats?.avgShotsAgainst} away={data.away.l5Stats?.avgShotsAgainst} />
-                <Row label="Átlag veszélyes támadás" home={data.home.l5Stats?.avgDangAttacks} away={data.away.l5Stats?.avgDangAttacks} />
-                <Row label="Átlag labdabirtoklás %" home={data.home.l5Stats?.avgPossession} away={data.away.l5Stats?.avgPossession} />
               </tbody>
             </table>
 
