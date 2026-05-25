@@ -90,24 +90,27 @@ export function calculateGoalProbabilities(home: any, away: any) {
 }
 
 export function calculateCornerProbabilities(home: any, away: any) {
-  const { l5Stats: h } = home
-  const { l5Stats: a } = away
   const hs = home.team.stats || {}
   const as_ = away.team.stats || {}
 
-  const hCornAll = hs.cornersAVG_home || h.avgCorners
-  const hCornAgAll = hs.cornersAgainstAVG_home || h.avgCornersAgainst
-  const aCornAll = as_.cornersAVG_away || a.avgCorners
-  const aCornAgAll = as_.cornersAgainstAVG_away || a.avgCornersAgainst
+  const hCornAll = hs.cornersAVG_home || 5
+  const hCornAgAll = hs.cornersAgainstAVG_home || 3
+  const hShotsAll = hs.shotsAVG_home || 12
+  const hDangAll = hs.dangerous_attacks_avg_home || 50
+
+  const aCornAll = as_.cornersAVG_away || 5
+  const aCornAgAll = as_.cornersAgainstAVG_away || 3
+  const aShotsAll = as_.shotsAVG_away || 12
+  const aDangAll = as_.dangerous_attacks_avg_away || 50
 
   const hazaiXC = 0.6 * (
-    ((h.avgCorners * 0.15 + h.avgShots * 0.12 + h.avgDangAttacks * 0.02) +
-     (a.avgCornersAgainst * 0.15 + a.avgShotsAgainst * 0.12 + a.avgDangAttacksAgainst * 0.02)) / 2
+    ((hCornAll * 0.15 + hShotsAll * 0.12 + hDangAll * 0.02) +
+     (aCornAgAll * 0.15 + as_.shotsAVG_home || aShotsAll * 0.12 + as_.dangerous_attacks_avg_home || aDangAll * 0.02)) / 2
   ) + 0.4 * ((hCornAll + aCornAgAll) / 2)
 
   const vendegXC = 0.6 * (
-    ((a.avgCorners * 0.15 + a.avgShots * 0.12 + a.avgDangAttacks * 0.02) +
-     (h.avgCornersAgainst * 0.15 + h.avgShotsAgainst * 0.12 + h.avgDangAttacksAgainst * 0.02)) / 2
+    ((aCornAll * 0.15 + aShotsAll * 0.12 + aDangAll * 0.02) +
+     (hCornAgAll * 0.15 + hShotsAll * 0.12 + hDangAll * 0.02)) / 2
   ) + 0.4 * ((aCornAll + hCornAgAll) / 2)
 
   const osszXC = hazaiXC + vendegXC
@@ -122,7 +125,7 @@ export function calculateCornerProbabilities(home: any, away: any) {
     })
   }
 
- const homeOverUnder = []
+  const homeOverUnder = []
   for (let threshold = 2.5; threshold <= 9.5; threshold += 1) {
     const floor = Math.floor(threshold)
     homeOverUnder.push({
@@ -153,19 +156,17 @@ export function calculateCornerProbabilities(home: any, away: any) {
 }
 
 export function calculateShotProbabilities(home: any, away: any) {
-  const { l5Stats: h } = home
-  const { l5Stats: a } = away
   const hs = home.team.stats || {}
   const as_ = away.team.stats || {}
 
-  const hShotsAll = hs.shotsAVG_home || h.avgShots
-  const hShotsAgAll = as_.shotsAVG_away || h.avgShotsAgainst
-  const hPossAll = hs.possessionAVG_home || h.avgPossession
+  const hShotsAll = hs.shotsAVG_home || 12
+  const hShotsAgAll = as_.shotsAVG_away || 12
+  const hPossAll = hs.possessionAVG_home || 50
   const hAtt3rdAll = 29
 
-  const aShotsAll = as_.shotsAVG_away || a.avgShots
-  const aShotsAgAll = hs.shotsAVG_home || a.avgShotsAgainst
-  const aPossAll = as_.possessionAVG_away || a.avgPossession
+  const aShotsAll = as_.shotsAVG_away || 12
+  const aShotsAgAll = hs.shotsAVG_home || 12
+  const aPossAll = as_.possessionAVG_away || 50
   const aAtt3rdAll = 28
 
   const alfa = 1
