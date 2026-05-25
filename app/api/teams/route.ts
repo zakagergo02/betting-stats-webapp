@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-const API_KEY = process.env.FOOTYSTATS_API_KEY
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -11,12 +15,17 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(
-      `https://api.football-data-api.com/league-teams?key=${API_KEY}&season_id=${seasonId}`
-    )
-    const data = await response.json()
-    return NextResponse.json(data)
+    const { data: teams, error } = await supabase
+      .from('teams')
+      .select('id, name, image, season_id')
+      .eq('season_id', parseInt(seasonId))
+      .order('name')
+
+    if (error) throw error
+
+    return NextResponse.json({ data: teams })
   } catch (error) {
+    console.error(error)
     return NextResponse.json({ error: 'Hiba történt' }, { status: 500 })
   }
 }

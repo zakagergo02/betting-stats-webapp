@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { calculateL5Stats } from '@/lib/calculateStats'
 import { calculateGoalProbabilities, calculateCornerProbabilities, calculateShotProbabilities } from '@/lib/calculateProbabilities'
 
-const API_KEY = process.env.FOOTYSTATS_API_KEY
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -15,25 +19,38 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [matchesRes, teamsRes] = await Promise.all([
-      fetch(`https://api.football-data-api.com/league-matches?key=${API_KEY}&season_id=${seasonId}&max_per_page=500`),
-      fetch(`https://api.football-data-api.com/league-teams?key=${API_KEY}&season_id=${seasonId}&include=stats`)
-    ])
+    // Meccsek lekérése Supabase-ből
+    const { data: matchesData } = await supabase
+      .from('matches')
+      .select('stats')
+      .eq('season_id', parseInt(seasonId))
 
-    const matchesData = await matchesRes.json()
-    const teamsData = await teamsRes.json()
+    const matches = (matchesData || []).map((m: any) => m.stats)
 
-    const matches = matchesData.data || []
-    const teams = teamsData.data || []
+    // Csapatok lekérése Supabase-ből
+    const { data: homeTeamData } = await supabase
+      .from('teams')
+      .select('*')
+      .eq('id', parseInt(homeTeamId))
+      .eq('season_id', parseInt(seasonId))
+      .single()
 
-    const homeTeam = teams.find((t: any) => t.id === parseInt(homeTeamId))
-    const awayTeam = teams.find((t: any) => t.id === parseInt(awayTeamId))
+    const { data: awayTeamData } = await supabase
+      .from('teams')
+      .select('*')
+      .eq('id', parseInt(awayTeamId))
+      .eq('season_id', parseInt(seasonId))
+      .single()
+
+    if (!homeTeamData || !awayTeamData) {
+      return NextResponse.json({ error: 'Csapat nem található' }, { status: 404 })
+    }
 
     const homeL5 = calculateL5Stats(matches, parseInt(homeTeamId), true)
     const awayL5 = calculateL5Stats(matches, parseInt(awayTeamId), false)
 
-    const homeData = { team: homeTeam, l5Stats: homeL5 }
-    const awayData = { team: awayTeam, l5Stats: awayL5 }
+    const homeData = { team: homeTeamData, l5Stats: homeL5 }
+    const awayData = { team: awayTeamData, l5Stats: awayL5 }
 
     const goalProbs = calculateGoalProbabilities(homeData, awayData)
     const cornerProbs = calculateCornerProbabilities(homeData, awayData)
